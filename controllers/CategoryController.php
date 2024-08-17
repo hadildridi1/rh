@@ -1,11 +1,11 @@
 <?php
 // CategoryController.php
-require_once 'config.php';
-require_once 'Category.php';
+include_once __DIR__ . '/../config/config.php';
+include_once __DIR__ . '/../models/Category.php';
 
 class CategoryController {
-    private $db;
-    private $category;
+    public $db;
+    public $category;
 
     public function __construct($db) {
         $this->db = $db;
@@ -16,7 +16,10 @@ class CategoryController {
         $this->category->name = $name;
         return $this->category->create();
     }
-
+    public function readById($id) {
+        $this->category->id = $id;
+        return $this->category->readById();
+    }
     public function read() {
         return $this->category->read();
     }

@@ -1,7 +1,7 @@
 <?php
 // DepartmentController.php
-require_once 'config.php';
-require_once 'Department.php';
+include_once __DIR__ . '/../config/config.php';
+include_once __DIR__ . '/../models/Departement.php';    
 
 class DepartmentController {
     private $db;
@@ -21,6 +21,10 @@ class DepartmentController {
     public function read() {
         return $this->department->read();
     }
+    public function readById($id) {
+        $this->department->id = $id;
+        return $this->department->readById();
+    }
 
     public function update($id, $name, $category_id) {
         $this->department->id = $id;
@@ -32,6 +36,12 @@ class DepartmentController {
     public function delete($id) {
         $this->department->id = $id;
         return $this->department->delete();
+    }
+    public function count() {
+        $query = "SELECT COUNT(*) as count FROM departments";
+        $stmt = $this->db->query($query);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['count'];
     }
 }
 ?>
