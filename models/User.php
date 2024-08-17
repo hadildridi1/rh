@@ -93,7 +93,11 @@ class User {
         return $row['average_age'];
     }
     public function usersPerDepartment() {
-        $query = "SELECT department_id, COUNT(*) as user_count FROM users GROUP BY department_id";
+        $query = "
+        SELECT d.name as department_name, COUNT(u.id) as user_count
+        FROM departments d
+        LEFT JOIN users u ON d.id = u.department_id
+        GROUP BY d.id";        
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

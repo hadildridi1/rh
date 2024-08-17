@@ -63,9 +63,12 @@ if (isset($_GET['delete_category_id'])) {
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 20px;
+            margin-top: 10px;
+            
         }
         table, th, td {
-            border: 1px solid black;
+            border: 1px solid #ddd;
         }
         th, td {
             padding: 10px;
@@ -84,6 +87,7 @@ if (isset($_GET['delete_category_id'])) {
         .btn-add {
             background-color: #4CAF50;
             color: white;
+            margin: 2px;
         }
         .btn-update {
             background-color: #FFA500;
