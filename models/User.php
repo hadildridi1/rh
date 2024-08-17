@@ -117,27 +117,43 @@ class User {
         return $stmt->fetch(PDO::FETCH_ASSOC)['lowest_salary'];
     }
     
+   
     public function searchUsers($criteria) {
-        $query = "SELECT * FROM users WHERE 1=1";
+        $query = "SELECT users.* FROM users";
         $params = [];
     
+        if (!empty($criteria['department_name'])) {
+            $query .= " LEFT JOIN departments ON users.department_id = departments.id";
+        }
+    
+        $query .= " WHERE 1=1";
+    
         if (!empty($criteria['name'])) {
-            $query .= " AND name LIKE :name";
+            $query .= " AND users.name LIKE :name";
             $params[':name'] = '%' . $criteria['name'] . '%';
         }
     
-        if (!empty($criteria['department_id'])) {
-            $query .= " AND department_id = :department_id";
-            $params[':department_id'] = $criteria['department_id'];
+        if (!empty($criteria['email'])) {
+            $query .= " AND users.email LIKE :email";
+            $params[':email'] = '%' . $criteria['email'] . '%';
+        }
+    
+        if (!empty($criteria['department_name'])) {
+            $query .= " AND departments.name LIKE :department_name";
+            $params[':department_name'] = '%' . $criteria['department_name'] . '%';
+        }
+        if (!empty($criteria['role'])) {
+            $query .= " AND users.role LIKE :role";
+            $params[':role'] = '%' . $criteria['role'] . '%';
         }
     
         if (!empty($criteria['min_salary'])) {
-            $query .= " AND salary >= :min_salary";
+            $query .= " AND users.salary >= :min_salary";
             $params[':min_salary'] = $criteria['min_salary'];
         }
     
         if (!empty($criteria['max_salary'])) {
-            $query .= " AND salary <= :max_salary";
+            $query .= " AND users.salary <= :max_salary";
             $params[':max_salary'] = $criteria['max_salary'];
         }
     
@@ -155,6 +171,37 @@ class User {
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function update() {
+        $query = "UPDATE " . $this->table . " 
+                  SET name = :name, email = :email, role = :role, department_id = :department_id, salary = :salary, age = :age 
+                  WHERE id = :id";
+
+        $stmt = $this->conn->prepare($query);
+
+        // Sanitize
+        $this->name = htmlspecialchars(strip_tags($this->name));
+        $this->email = htmlspecialchars(strip_tags($this->email));
+        $this->role = htmlspecialchars(strip_tags($this->role));
+        $this->department_id = htmlspecialchars(strip_tags($this->department_id));
+        $this->salary = htmlspecialchars(strip_tags($this->salary));
+        $this->age = htmlspecialchars(strip_tags($this->age));
+        $this->id = htmlspecialchars(strip_tags($this->id));
+
+        // Bind values
+        $stmt->bindParam(':name', $this->name);
+        $stmt->bindParam(':email', $this->email);
+        $stmt->bindParam(':role', $this->role);
+        $stmt->bindParam(':department_id', $this->department_id);
+        $stmt->bindParam(':salary', $this->salary);
+        $stmt->bindParam(':age', $this->age);
+        $stmt->bindParam(':id', $this->id);
+
+        if ($stmt->execute()) {
+            return true;
+        }
+
+        return false;
     }
     
 }

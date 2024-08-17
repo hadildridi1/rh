@@ -7,15 +7,17 @@ $db = new PDO("mysql:host=localhost;dbname=rh", "root", "");
 // Initialize UserController
 $userController = new UserController($db);
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $_POST['id'];
     $name = $_POST['name'];
     $email = $_POST['email'];
     $role = $_POST['role'];
     $department_id = $_POST['department_id'];
+    $salary = $_POST['salary'];
+    $age = $_POST['age'];
 
-    $userController->update($id, $name, $email, $role, $department_id);
-    header("Location: admin_view.php");
+    $userController->update($id, $name, $email, $role, $department_id, $salary, $age);
+    header("Location: admin_user.php");
     exit();
 } else {
     $id = $_GET['id'];
@@ -78,6 +80,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         form button:hover {
             background-color: #0056b3;
         }
+        label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+input[type="number"]:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
     </style>
 </head>
 <body>
@@ -92,7 +116,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <label for="role">Role:</label>
             <input type="text" id="role" name="role" value="<?php echo htmlspecialchars($user['role']); ?>" required>
             <label for="department_id">Department ID:</label>
-            <input type="text" id="department_id" name="department_id" value="<?php echo htmlspecialchars($user['department_id']); ?>" required>
+            <input type="text" id="department_id" name="department_id" value="<?php echo htmlspecialchars($user['department_id']); ?>">
+            <label for="salary">Salary:</label>
+            <input type="number" id="salary" name="salary" value="<?php echo htmlspecialchars($user['salary']); ?>" required>
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" value="<?php echo htmlspecialchars($user['age']); ?>" required>
             <button type="submit">Update</button>
         </form>
     </div>

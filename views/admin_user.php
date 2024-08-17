@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'name' => $_POST['name'] ?? '',
         'email' => $_POST['email'] ?? '',
         'role' => $_POST['role'] ?? '',
-        'department_id' => $_POST['department_id'] ?? '',
+        'department_name' => $_POST['department_name'] ?? '',
         'min_salary' => $_POST['min_salary'] ?? '',
         'max_salary' => $_POST['max_salary'] ?? '',
         'sort_field' => $_POST['sort_field'] ?? '',
@@ -137,6 +137,7 @@ unset($user);
     </style>
 </head>
 <body>
+
     <div class="container">
         <h1>Admin Users</h1>
         <form method="POST" action="">
@@ -153,8 +154,8 @@ unset($user);
                 <input type="text" id="role" name="role">
             </div>
             <div class="form-group">
-                <label for="department_id">Department ID:</label>
-                <input type="text" id="department_id" name="department_id">
+                <label for="department_name">Department Name:</label>
+                <input type="text" id="department_name" name="department_name">
             </div>
             <div class="form-group">
                 <label for="min_salary">Min Salary:</label>
@@ -170,7 +171,7 @@ unset($user);
                     <option value="name">Name</option>
                     <option value="email">Email</option>
                     <option value="role">Role</option>
-                    <option value="department_id">Department ID</option>
+                    <option value="department_id">Department </option>
                     <option value="salary">Salary</option>
                     <option value="age">Age</option>
                 </select>
