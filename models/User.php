@@ -112,5 +112,46 @@ class User {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC)['lowest_salary'];
     }
+    
+    public function searchUsers($criteria) {
+        $query = "SELECT * FROM users WHERE 1=1";
+        $params = [];
+    
+        if (!empty($criteria['name'])) {
+            $query .= " AND name LIKE :name";
+            $params[':name'] = '%' . $criteria['name'] . '%';
+        }
+    
+        if (!empty($criteria['department_id'])) {
+            $query .= " AND department_id = :department_id";
+            $params[':department_id'] = $criteria['department_id'];
+        }
+    
+        if (!empty($criteria['min_salary'])) {
+            $query .= " AND salary >= :min_salary";
+            $params[':min_salary'] = $criteria['min_salary'];
+        }
+    
+        if (!empty($criteria['max_salary'])) {
+            $query .= " AND salary <= :max_salary";
+            $params[':max_salary'] = $criteria['max_salary'];
+        }
+    
+        if (!empty($criteria['sort_field']) && !empty($criteria['sort_order'])) {
+            $query .= " ORDER BY " . $criteria['sort_field'] . " " . $criteria['sort_order'];
+        }
+    
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getAllUsers() {
+        $query = "SELECT * FROM users";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
 }
 ?>

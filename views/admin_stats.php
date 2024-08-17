@@ -49,7 +49,7 @@ $lowestSalary = $userController->lowestSalary();
         <h2>Users Per Department</h2>
         <ul>
             <?php foreach ($usersPerDepartment as $department): ?>
-                <li>Department ID <?php echo $department['department_id']; ?>: <?php echo $department['user_count']; ?> users</li>
+                <li>Department ID <?php echo $department['department_id']; ?>: <?php echo $department['user_count']; ?> user(s)</li>
             <?php endforeach; ?>
         </ul>
     </div>

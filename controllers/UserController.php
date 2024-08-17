@@ -82,5 +82,13 @@ class UserController {
     public function lowestSalary() {
         return $this->user->lowestSalary();
     }
+
+    public function searchUsers($criteria) {
+        return $this->user->searchUsers($criteria);
+    }
+
+    public function getAllUsers() {
+        return $this->user->getAllUsers();
+    }
 }
 ?>
