@@ -1,64 +1,102 @@
 <?php
-// PerformanceReview.php
 class PerformanceReview {
-    private $conn;
-    private $table = 'performance_reviews';
+    private $id;
+    private $user_id;
+    private $review;
+    private $date;
 
-    public $id;
-    public $user_id;
-    public $review;
-    public $date;
-
-    public function __construct($db) {
-        $this->conn = $db;
+    // Getters
+    public function getId() {
+        return $this->id;
     }
 
-    public function create() {
-        $query = "INSERT INTO " . $this->table . " SET user_id=:user_id, review=:review, date=:date";
-        $stmt = $this->conn->prepare($query);
-
-        $stmt->bindParam(':user_id', $this->user_id);
-        $stmt->bindParam(':review', $this->review);
-        $stmt->bindParam(':date', $this->date);
-
-        if($stmt->execute()) {
-            return true;
-        }
-        return false;
+    public function getUserId() {
+        return $this->user_id;
     }
 
-    public function read() {
-        $query = "SELECT * FROM " . $this->table;
-        $stmt = $this->conn->prepare($query);
+    public function getReview() {
+        return $this->review;
+    }
+
+    public function getDate() {
+        return $this->date;
+    }
+
+    // Fetch reviews by user ID
+    public static function getByUserId($user_id) {
+        global $conn; // Assuming $conn is your PDO database connection
+
+        $query = "SELECT * FROM performance_reviews WHERE user_id = :user_id";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt;
+
+        $reviews = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $review = new self();
+            $review->id = $row['id'];
+            $review->user_id = $row['user_id'];
+            $review->review = $row['review'];
+            $review->date = $row['date'];
+            $reviews[] = $review;
+        }
+
+        return $reviews;
     }
 
-    public function update() {
-        $query = "UPDATE " . $this->table . " SET user_id=:user_id, review=:review, date=:date WHERE id=:id";
-        $stmt = $this->conn->prepare($query);
+    // Create a new performance review
+    public static function create($user_id, $review, $date) {
+        global $conn;
 
-        $stmt->bindParam(':user_id', $this->user_id);
-        $stmt->bindParam(':review', $this->review);
-        $stmt->bindParam(':date', $this->date);
-        $stmt->bindParam(':id', $this->id);
-
-        if($stmt->execute()) {
-            return true;
-        }
-        return false;
+        $query = "INSERT INTO performance_reviews (user_id, review, date) VALUES (:user_id, :review, :date)";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->bindParam(':review', $review, PDO::PARAM_STR);
+        $stmt->bindParam(':date', $date, PDO::PARAM_STR);
+        return $stmt->execute();
     }
 
-    public function delete() {
-        $query = "DELETE FROM " . $this->table . " WHERE id=:id";
-        $stmt = $this->conn->prepare($query);
+    // Read all performance reviews
+    public static function read() {
+        global $conn;
 
-        $stmt->bindParam(':id', $this->id);
+        $query = "SELECT * FROM performance_reviews";
+        $stmt = $conn->query($query);
 
-        if($stmt->execute()) {
-            return true;
+        $reviews = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $review = new self();
+            $review->id = $row['id'];
+            $review->user_id = $row['user_id'];
+            $review->review = $row['review'];
+            $review->date = $row['date'];
+            $reviews[] = $review;
         }
-        return false;
+
+        return $reviews;
+    }
+
+    // Update a performance review
+    public static function update($id, $user_id, $review, $date) {
+        global $conn;
+
+        $query = "UPDATE performance_reviews SET user_id = :user_id, review = :review, date = :date WHERE id = :id";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->bindParam(':review', $review, PDO::PARAM_STR);
+        $stmt->bindParam(':date', $date, PDO::PARAM_STR);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    // Delete a performance review
+    public static function delete($id) {
+        global $conn;
+
+        $query = "DELETE FROM performance_reviews WHERE id = :id";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        return $stmt->execute();
     }
 }
 ?>

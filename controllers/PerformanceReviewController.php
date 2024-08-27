@@ -1,39 +1,32 @@
 <?php
-// PerformanceReviewController.php
-require_once 'config.php';
-require_once 'PerformanceReview.php';
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../models/PerformanceReview.php';
 
 class PerformanceReviewController {
     private $db;
-    private $performanceReview;
 
     public function __construct($db) {
         $this->db = $db;
-        $this->performanceReview = new PerformanceReview($db);
+    }
+
+    public function getReviewsByUserId($user_id) {
+        return PerformanceReview::getByUserId($user_id);
     }
 
     public function create($user_id, $review, $date) {
-        $this->performanceReview->user_id = $user_id;
-        $this->performanceReview->review = $review;
-        $this->performanceReview->date = $date;
-        return $this->performanceReview->create();
+        return PerformanceReview::create($user_id, $review, $date);
     }
 
     public function read() {
-        return $this->performanceReview->read();
+        return PerformanceReview::read();
     }
 
     public function update($id, $user_id, $review, $date) {
-        $this->performanceReview->id = $id;
-        $this->performanceReview->user_id = $user_id;
-        $this->performanceReview->review = $review;
-        $this->performanceReview->date = $date;
-        return $this->performanceReview->update();
+        return PerformanceReview::update($id, $user_id, $review, $date);
     }
 
     public function delete($id) {
-        $this->performanceReview->id = $id;
-        return $this->performanceReview->delete();
+        return PerformanceReview::delete($id);
     }
 }
 ?>

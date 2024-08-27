@@ -10,6 +10,6 @@ $userController = new UserController($db);
 $id = $_GET['id'];
 $userController->delete($id);
 
-header("Location: admin_view.php");
+header("Location: admin_user.php");
 exit();
 ?>

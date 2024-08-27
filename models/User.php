@@ -11,13 +11,14 @@ class User {
     public $department_id;
     public $salary;
     public $age;
+    public $password;
 
     public function __construct($db) {
         $this->conn = $db;
     }
 
     public function create() {
-        $query = "INSERT INTO " . $this->table . " SET name=:name, email=:email, role=:role, department_id=:department_id, salary=:salary, age=:age";
+        $query = "INSERT INTO " . $this->table . " SET name=:name, email=:email, role=:role, department_id=:department_id, salary=:salary, age=:age, password=:password";
         $stmt = $this->conn->prepare($query);
 
         $stmt->bindParam(':name', $this->name);
@@ -26,6 +27,7 @@ class User {
         $stmt->bindParam(':department_id', $this->department_id);
         $stmt->bindParam(':salary', $this->salary);
         $stmt->bindParam(':age', $this->age);
+        $stmt->bindParam(':password', $this->password);
 
         if($stmt->execute()) {
             return true;
@@ -42,12 +44,13 @@ class User {
     }
 
     public function readById() {
-        $query = "SELECT id, name, email, role, department_id, salary, age FROM " . $this->table . " WHERE id = ? LIMIT 0,1";
+        $query = "SELECT id, name, email, role, department_id, salary, age, password FROM " . $this->table . " WHERE id = ? LIMIT 0,1";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(1, $this->id);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
     public function count() {
         $query = "SELECT COUNT(*) as total FROM " . $this->table;
         $stmt = $this->conn->prepare($query);
@@ -166,6 +169,12 @@ class User {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function updateUser($name, $email, $password) {
+        $stmt = $this->conn->prepare("UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?");
+        return $stmt->execute([$name, $email, $password, $this->id]);
+    }
+    
+
     public function getAllUsers() {
         $query = "SELECT * FROM users";
         $stmt = $this->conn->prepare($query);
@@ -202,6 +211,21 @@ class User {
         }
 
         return false;
+    }
+    public function delete() {
+        $query = "DELETE FROM " . $this->table . " WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $this->id);
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
+    }
+
+    public function getPerformanceReviewsByEmployeeId($employee_id) {
+        $stmt = $this->conn->prepare("SELECT * FROM performance_reviews WHERE user_id = ?");
+        $stmt->execute([$employee_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
 }

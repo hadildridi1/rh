@@ -46,6 +46,18 @@ class UserController {
         return $this->user->update();
     }
 
+   
+
+    public function getUserById($id) {
+        $this->user->id = $id;
+        return $this->user->readById();
+    }
+
+    public function updateUser($id, $name, $email, $password) {
+        $this->user->id = $id;
+        return $this->user->updateUser($name, $email, $password);
+    }
+
     // Delete a user
     public function delete($id) {
         $this->user->id = $id;
@@ -89,6 +101,10 @@ class UserController {
 
     public function getAllUsers() {
         return $this->user->getAllUsers();
+    }
+
+    public function getPerformanceReviewsByEmployeeId($employee_id) {
+        return $this->user->getPerformanceReviewsByEmployeeId($employee_id);
     }
 }
 ?>
